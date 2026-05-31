@@ -58,7 +58,6 @@ if (reducedMotion) {
       "#about .section-head, #about .about-body, #about .about-side, " +
       "#experience .section-head, #experience .timeline-item, " +
       "#work .section-head, #work .feature-card, #work .subsection-title, #work .project-card, " +
-      "#research .section-head, #research .research, " +
       "#skills .section-head, #skills .skill-block, " +
       "#contact .section-head, #contact .contact-lede, #contact .contact-email, #contact .contact-links"
     );
