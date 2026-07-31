@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Manrope', system-ui, sans-serif; background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; }
+  :root {
+    --bg: #0b0f14; --bg2: #10161d; --card: #131b24; --border: #222c38;
+    --text: #e6edf3; --muted: #8b98a8; --accent: #f5a623; --accent2: #5aa2ff;
+    --shadow: 0 10px 40px rgba(0,0,0,.4);
+  }
+  [data-theme="light"] {
+    --bg: #f6f7f9; --bg2: #ffffff; --card: #ffffff; --border: #e6e9ee;
+    --text: #16202b; --muted: #5b6875; --accent: #d97706; --accent2: #2563eb;
+    --shadow: 0 10px 30px rgba(22,32,43,.08);
+  }
+  a { color: var(--accent2); text-decoration: none; }
+  a:hover { color: var(--accent); }
+  ::selection { background: var(--accent); color: #0b0f14; }
+  @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-14px); } }
+  @keyframes pageIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes spinIn { from { opacity: 0; letter-spacing: .5em; } to { opacity: 1; letter-spacing: .18em; } }
+</style>
+</helmet>
+
+<div style="min-height: 100vh; background: var(--bg); transition: background .4s;">
+
+  <div style="position: fixed; inset: 0; z-index: 999; background: var(--bg); display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 18px; transition: opacity .7s ease; opacity: {{ splashOpacity }}; pointer-events: {{ splashPointer }};">
+    <div style="width: 60px; height: 60px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    <div style="font-family: 'Space Grotesk'; font-weight: 700; font-size: 20px; color: var(--text); animation: spinIn 1.2s ease; letter-spacing: .18em;">MD AL MOMEN</div>
+  </div>
+
+  <nav style="position: sticky; top: 0; z-index: 100; backdrop-filter: blur(14px); background: color-mix(in srgb, var(--bg) 80%, transparent); border-bottom: 1px solid var(--border);">
+    <div style="max-width: 1180px; margin: 0 auto; padding: 14px 26px; display: flex; align-items: center; justify-content: space-between; gap: 16px;">
+      <button onClick="{{ goHome }}" style="background: none; border: none; cursor: pointer; font-family: 'Space Grotesk'; font-weight: 700; font-size: 18px; color: var(--text); letter-spacing: .04em;">al<span style="color: var(--accent);">.</span>momen</button>
+      <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: flex-end;">
+        <sc-for list="{{ nav }}" as="item" hint-placeholder-count="6">
+          <button onClick="{{ item.onClick }}" style="position: relative; background: none; border: none; cursor: pointer; font-family: 'Manrope'; font-size: 14px; font-weight: 600; color: {{ item.color }}; padding: 8px 12px; border-radius: 8px;" style-hover="color: var(--text);">
+            {{ item.label }}
+            <sc-if value="{{ item.active }}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: 12px; right: 12px; bottom: 2px; height: 2px; border-radius: 2px; background: var(--accent);"></span></sc-if>
+          </button>
+        </sc-for>
+        <a href="assets/momen-resume.pdf" target="_blank" style="margin-left: 6px; display: inline-flex; align-items: center; gap: 7px; padding: 8px 15px; border-radius: 9px; background: var(--accent); color: #0b0f14; font-size: 13px; font-weight: 700;" style-hover="filter: brightness(1.08);">Resume ↓</a>
+        <button onClick="{{ toggleTheme }}" aria-label="Toggle theme" style="margin-left: 4px; width: 36px; height: 36px; border-radius: 9px; border: 1px solid var(--border); background: var(--card); color: var(--text); cursor: pointer; font-size: 15px; display: flex; align-items: center; justify-content: center;" style-hover="border-color: var(--accent);">{{ themeIcon }}</button>
+      </div>
+    </div>
+  </nav>
+
+  <main style="max-width: 1180px; margin: 0 auto; padding: 0 26px;">
+
+    <!-- HOME -->
+    <sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+      <section style="min-height: calc(100vh - 66px); display: grid; grid-template-columns: 1.25fr 1fr; gap: 40px; align-items: center; animation: pageIn .55s ease both;">
+        <div>
+          <div style="display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--card); font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 22px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #33d17a; box-shadow: 0 0 0 4px color-mix(in srgb, #33d17a 25%, transparent);"></span>
+            Open to opportunities · Dhaka, Bangladesh
+          </div>
+          <h1 style="font-family: 'Space Grotesk'; font-weight: 700; font-size: clamp(38px, 5.2vw, 60px); line-height: 1.05; letter-spacing: -.02em; margin-bottom: 18px;">Md Al Momen —<br><span style="color: var(--accent);">full-stack developer</span> &amp; bioinformatics researcher.</h1>
+          <p style="font-size: 18px; line-height: 1.7; color: var(--muted); max-width: 560px; margin-bottom: 30px; text-wrap: pretty;">Software engineering student who ships production-grade web apps end to end — and researches deep learning &amp; computer vision for biological data. React, Node.js, Java, Python, Firebase.</p>
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 30px;">
+            <button onClick="{{ goProjects }}" style="padding: 14px 24px; border-radius: 12px; background: var(--accent); border: none; cursor: pointer; color: #0b0f14; font-family: 'Manrope'; font-weight: 700; font-size: 15px;" style-hover="filter: brightness(1.08); transform: translateY(-2px);">View my work</button>
+            <a href="assets/momen-resume.pdf" target="_blank" style="padding: 14px 24px; border-radius: 12px; background: var(--card); border: 1px solid var(--border); color: var(--text); font-weight: 700; font-size: 15px;" style-hover="border-color: var(--accent);">Download résumé ↓</a>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <sc-for list="{{ socials }}" as="s" hint-placeholder-count="4">
+              <a href="{{ s.href }}" target="_blank" style="display: inline-flex; align-items: center; gap: 8px; padding: 9px 14px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg2); color: var(--text); font-size: 13px; font-weight: 600;" style-hover="border-color: var(--accent); color: var(--accent);">
+                <img src="{{ s.icon }}" alt="" onError="{{ imgErr }}" style="width: 16px; height: 16px; display: block;">
+                {{ s.label }}
+              </a>
+            </sc-for>
+          </div>
+        </div>
+        <div style="justify-self: center;">
+          <div style="position: relative; width: 340px; height: 380px; display: flex; align-items: flex-end; justify-content: center;">
+            <div style="position: absolute; bottom: 24px; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle at 50% 40%, color-mix(in srgb, var(--accent) 26%, transparent), transparent 68%);"></div>
+            <div style="position: absolute; bottom: 24px; width: 300px; height: 300px; border-radius: 50%; border: 1px dashed var(--border); animation: floaty 7s ease-in-out infinite;"></div>
+            <img src="assets/momen-hero.png" alt="Md Al Momen" style="position: relative; height: 400px; object-fit: contain; filter: drop-shadow(0 20px 30px rgba(0,0,0,.35));">
+          </div>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- SKILLS -->
+    <sc-if value="{{ isSkills }}" hint-placeholder-val="{{ false }}">
+      <section style="padding: 56px 0 80px; animation: pageIn .55s ease both;">
+        <div style="margin-bottom: 40px;">
+          <div style="font-size: 13px; font-weight: 700; letter-spacing: .16em; color: var(--accent); text-transform: uppercase;">Toolbox</div>
+          <h2 style="font-family: 'Space Grotesk'; font-weight: 700; font-size: clamp(30px, 4vw, 44px); letter-spacing: -.02em; margin-top: 8px;">Skills &amp; proficiency</h2>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); gap: 18px;">
+          <sc-for list="{{ skills }}" as="grp" hint-placeholder-count="7">
+            <div style="padding: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 16px;" style-hover="border-color: var(--accent);">
+              <div style="font-family: 'Space Grotesk'; font-weight: 600; font-size: 17px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;"><span style="width: 9px; height: 9px; border-radius: 3px; background: var(--accent);"></span>{{ grp.name }}</div>
+              <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                <sc-for list="{{ grp.items }}" as="t" hint-placeholder-count="5">
+                  <span style="display: inline-flex; align-items: center; gap: 7px; padding: 7px 12px; border-radius: 8px; background: var(--bg2); border: 1px solid var(--border); font-size: 13px; font-weight: 600; color: var(--text);">
+                    <sc-if value="{{ t.s }}" hint-placeholder-val="{{ false }}"><img src="https://cdn.simpleicons.org/{{ t.s }}" alt="" onError="{{ imgErr }}" style="width: 15px; height: 15px; display: block;"></sc-if>
+                    {{ t.n }}
+                  </span>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- EXPERIENCE -->
+    <sc-if value="{{ isExperience }}" hint-placeholder-val="{{ false }}">
+      <section style="padding: 56px 0 80px; animation: pageIn .55s ease both;">
+        <div style="margin-bottom: 40px;">
+          <div style="font-size: 13px; font-weight: 700; letter-spacing: .16em; color: var(--accent); text-transform: uppercase;">Journey</div>
+          <h2 style="font-family: 'Space Grotesk'; font-weight: 700; font-size: clamp(30px, 4vw, 44px); letter-spacing: -.02em; margin-top: 8px;">Work experience</h2>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+          <sc-for list="{{ experience }}" as="job" hint-placeholder-count="4">
+            <div style="display: grid; grid-template-columns: 200px 1fr; gap: 28px; padding: 28px 0; border-top: 1px solid var(--border);">
+              <div>
+                <div style="font-family: 'Space Grotesk'; font-weight: 600; font-size: 14px; color: var(--accent);">{{ job.dates }}</div>
+                <div style="font-size: 13px; color: var(--muted); margin-top: 4px; font-weight: 600;">{{ job.location }}</div>
+              </div>
+              <div>
+                <div style="font-family: 'Space Grotesk'; font-weight: 700; font-size: 20px;">{{ job.role }}</div>
+                <div style="font-size: 15px; color: var(--accent2); font-weight: 600; margin: 3px 0 12px;">{{ job.company }}</div>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 8px;">
+                  <sc-for list="{{ job.points }}" as="p" hint-placeholder-count="3">
+                    <li style="position: relative; padding-left: 20px; font-size: 15px; line-height: 1.6; color: var(--muted); text-wrap: pretty;"><span style="position: absolute; left: 0; top: 9px; width: 6px; height: 6px; border-radius: 50%; background: var(--accent);"></span>{{ p }}</li>
+                  </sc-for>
+                </ul>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- EDUCATION -->
+    <sc-if value="{{ isEducation }}" hint-placeholder-val="{{ false }}">
+      <section style="padding: 56px 0 80px; animation: pageIn .55s ease both;">
+        <div style="margin-bottom: 40px;">
+          <div style="font-size: 13px; font-weight: 700; letter-spacing: .16em; color: var(--accent); text-transform: uppercase;">Learning</div>
+          <h2 style="font-family: 'Space Grotesk'; font-weight: 700; font-size: clamp(30px, 4vw, 44px); letter-spacing: -.02em; margin-top: 8px;">Education</h2>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px;">
+          <sc-for list="{{ education }}" as="ed" hint-placeholder-count="3">
+            <div style="padding: 26px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; gap: 10px; min-height: 200px;">
+              <div style="font-family: 'Space Grotesk'; font-weight: 600; font-size: 13px; color: var(--accent);">{{ ed.dates }}</div>
+              <div style="font-family: 'Space Grotesk'; font-weight: 700; font-size: 19px; line-height: 1.3;">{{ ed.degree }}</div>
+              <div style="font-size: 14px; color: var(--muted); font-weight: 600;">{{ ed.school }}</div>
+              <div style="margin-top: auto; padding-top: 8px; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700;"><span style="color: var(--accent2);">{{ ed.grade }}</span><span style="color: var(--muted); font-weight: 500;">{{ ed.extra }}</span></div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- PROJECTS -->
+    <sc-if value="{{ isProjects }}" hint-placeholder-val="{{ false }}">
+      <section style="padding: 56px 0 80px; animation: pageIn .55s ease both;">
+        <div style="margin-bottom: 40px;">
+          <div style="font-size: 13px; font-weight: 700; letter-spacing: .16em; color: var(--accent); text-transform: uppercase;">Build log</div>
+          <h2 style="font-family: 'Space Grotesk'; font-weight: 700; font-size: clamp(30px, 4vw, 44px); letter-spacing: -.02em; margin-top: 8px;">Projects</h2>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 18px;">
+          <sc-for list="{{ projects }}" as="pr" hint-placeholder-count="6">
+            <div style="display: flex; flex-direction: column; padding: 26px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; transition: transform .25s, border-color .25s;" style-hover="transform: translateY(-4px); border-color: var(--accent);">
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px;">
+                <span style="font-size: 12px; font-weight: 700; color: var(--muted); font-family: 'Space Grotesk';">{{ pr.dates }}</span>
+                <sc-if value="{{ pr.live }}" hint-placeholder-val="{{ false }}"><span style="font-size: 11px; font-weight: 700; padding: 4px 9px; border-radius: 999px; background: color-mix(in srgb, #33d17a 18%, transparent); color: #33d17a;">LIVE</span></sc-if>
+              </div>
+              <h3 style="font-family: 'Space Grotesk'; font-weight: 700; font-size: 20px; line-height: 1.25; margin-bottom: 10px;">{{ pr.name }}</h3>
+              <p style="font-size: 14.5px; line-height: 1.6; color: var(--muted); margin-bottom: 16px; text-wrap: pretty;">{{ pr.desc }}</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 18px;">
+                <sc-for list="{{ pr.tech }}" as="tt" hint-placeholder-count="4">
+                  <span style="padding: 5px 10px; border-radius: 7px; background: var(--bg2); border: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--muted);">{{ tt }}</span>
+                </sc-for>
+              </div>
+              <div style="margin-top: auto; display: flex; gap: 14px; font-size: 14px; font-weight: 700;">
+                <sc-if value="{{ pr.liveHref }}" hint-placeholder-val="{{ false }}"><a href="{{ pr.liveHref }}" target="_blank" style="color: var(--accent);" style-hover="text-decoration: underline;">Live site ↗</a></sc-if>
+                <sc-if value="{{ pr.repo }}" hint-placeholder-val="{{ false }}"><a href="{{ pr.repo }}" target="_blank" style="color: var(--text);" style-hover="color: var(--accent);">Code ↗</a></sc-if>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- ACHIEVEMENTS -->
+    <sc-if value="{{ isAchievements }}" hint-placeholder-val="{{ false }}">
+      <section style="padding: 56px 0 80px; animation: pageIn .55s ease both;">
+        <div style="margin-bottom: 40px;">
+          <div style="font-size: 13px; font-weight: 700; letter-spacing: .16em; color: var(--accent); text-transform: uppercase;">Beyond code</div>
+          <h2 style="font-family: 'Space Grotesk'; font-weight: 700; font-size: clamp(30px, 4vw, 44px); letter-spacing: -.02em; margin-top: 8px;">Achievements &amp; activities</h2>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px;">
+          <sc-for list="{{ achievements }}" as="a" hint-placeholder-count="5">
+            <div style="padding: 24px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; display: flex; gap: 16px; align-items: flex-start;">
+              <div style="flex: none; width: 44px; height: 44px; border-radius: 12px; background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk'; font-weight: 700; font-size: 18px;">{{ a.mark }}</div>
+              <div>
+                <div style="font-family: 'Space Grotesk'; font-weight: 700; font-size: 16px; line-height: 1.3;">{{ a.title }}</div>
+                <div style="font-size: 13.5px; color: var(--muted); margin-top: 5px; line-height: 1.5;">{{ a.desc }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </section>
+    </sc-if>
+
+    <!-- CONTACT -->
+    <sc-if value="{{ isContact }}" hint-placeholder-val="{{ false }}">
+      <section style="padding: 64px 0 80px; text-align: center; animation: pageIn .55s ease both;">
+        <div style="font-size: 13px; font-weight: 700; letter-spacing: .16em; color: var(--accent); text-transform: uppercase;">Say hello</div>
+        <h2 style="font-family: 'Space Grotesk'; font-weight: 700; font-size: clamp(32px, 5vw, 52px); letter-spacing: -.02em; margin: 10px 0 16px;">Let's build something.</h2>
+        <p style="font-size: 18px; color: var(--muted); max-width: 520px; margin: 0 auto 34px; line-height: 1.6;">I'm open to internships, freelance projects, and research collaborations. Reach me through any of these.</p>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; max-width: 780px; margin: 0 auto 34px; text-align: left;">
+          <sc-for list="{{ contacts }}" as="c" hint-placeholder-count="5">
+            <a href="{{ c.href }}" target="_blank" style="display: flex; align-items: center; gap: 14px; padding: 18px 20px; background: var(--card); border: 1px solid var(--border); border-radius: 14px; color: var(--text);" style-hover="border-color: var(--accent); transform: translateY(-2px);">
+              <span style="flex: none; width: 42px; height: 42px; border-radius: 11px; background: var(--bg2); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center;"><img src="{{ c.icon }}" alt="" onError="{{ imgErr }}" style="width: 19px; height: 19px; display: block;"></span>
+              <span>
+                <span style="display: block; font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .05em;">{{ c.label }}</span>
+                <span style="display: block; font-size: 15px; font-weight: 600; margin-top: 2px;">{{ c.value }}</span>
+              </span>
+            </a>
+          </sc-for>
+        </div>
+        <a href="mailto:al.momen663@gmail.com" style="display: inline-block; padding: 16px 30px; border-radius: 14px; background: var(--accent); color: #0b0f14; font-weight: 700; font-size: 16px;" style-hover="filter: brightness(1.08); transform: translateY(-2px);">Email me directly</a>
+        <div style="margin-top: 48px; padding-top: 22px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted);">© 2026 Md Al Momen · Dhaka, Bangladesh</div>
+      </section>
+    </sc-if>
+
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180,&quot;height&quot;:760}}">
+class Component extends DCLogic {
+  state = { theme: 'dark', loaded: false, page: 'home' };
+
+  componentDidMount() {
+    document.documentElement.dataset.theme = this.state.theme;
+    setTimeout(() => this.setState({ loaded: true }), 1100);
+    if (!document.getElementById('__spin_kf')) {
+      const s = document.createElement('style');
+      s.id = '__spin_kf';
+      s.textContent = '@keyframes spin{to{transform:rotate(360deg)}}';
+      document.head.appendChild(s);
+    }
+  }
+
+  setPage = (page) => {
+    this.setState({ page });
+    if (typeof window !== 'undefined') window.scrollTo({ top: 0 });
+  };
+
+  toggleTheme = () => {
+    const theme = this.state.theme === 'dark' ? 'light' : 'dark';
+    document.documentElement.dataset.theme = theme;
+    this.setState({ theme });
+  };
+
+  imgErr = (e) => { e.currentTarget.style.display = 'none'; };
+
+  buildData() {
+    return {
+      socials: [
+        { label: 'GitHub', icon: 'https://cdn.simpleicons.org/github', href: 'https://github.com/al-momen663' },
+        { label: 'LinkedIn', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg', href: 'https://linkedin.com/in/mdalmomen' },
+        { label: 'Email', icon: 'https://cdn.simpleicons.org/gmail', href: 'mailto:al.momen663@gmail.com' },
+        { label: 'Portfolio', icon: 'https://cdn.simpleicons.org/netlify', href: 'https://mdalmomen.netlify.app' },
+      ],
+      contacts: [
+        { label: 'Email', icon: 'https://cdn.simpleicons.org/gmail', value: 'al.momen663@gmail.com', href: 'mailto:al.momen663@gmail.com' },
+        { label: 'GitHub', icon: 'https://cdn.simpleicons.org/github', value: 'github.com/al-momen663', href: 'https://github.com/al-momen663' },
+        { label: 'LinkedIn', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linkedin/linkedin-original.svg', value: 'in/mdalmomen', href: 'https://linkedin.com/in/mdalmomen' },
+        { label: 'Portfolio', icon: 'https://cdn.simpleicons.org/netlify', value: 'mdalmomen.netlify.app', href: 'https://mdalmomen.netlify.app' },
+        { label: 'Phone', icon: 'https://cdn.simpleicons.org/whatsapp', value: '+880 1517-809473', href: 'tel:+8801517809473' },
+      ],
+      skills: [
+        { name: 'Languages', items: [
+          { n: 'Python', s: 'python' }, { n: 'Java', s: 'openjdk' }, { n: 'C / C++', s: 'cplusplus' },
+          { n: 'JavaScript', s: 'javascript' }, { n: 'TypeScript', s: 'typescript' }, { n: 'HTML5', s: 'html5' },
+          { n: 'CSS3', s: 'css' }, { n: 'SQL', s: 'mysql' } ] },
+        { name: 'Frontend', items: [
+          { n: 'React 19', s: 'react' }, { n: 'Vite', s: 'vite' }, { n: 'TypeScript', s: 'typescript' },
+          { n: 'Tailwind CSS', s: 'tailwindcss' }, { n: 'Responsive Design', s: '' } ] },
+        { name: 'Backend', items: [
+          { n: 'Node.js', s: 'nodedotjs' }, { n: 'Express.js', s: 'express' }, { n: 'Spring Boot', s: 'springboot' },
+          { n: 'REST APIs', s: '' } ] },
+        { name: 'Databases', items: [
+          { n: 'MySQL', s: 'mysql' }, { n: 'PostgreSQL', s: 'postgresql' }, { n: 'Firebase Firestore', s: 'firebase' },
+          { n: 'SQLite', s: 'sqlite' } ] },
+        { name: 'Cloud & DevOps', items: [
+          { n: 'Firebase', s: 'firebase' }, { n: 'cPanel', s: 'cpanel' }, { n: 'Netlify', s: 'netlify' },
+          { n: 'Git', s: 'git' }, { n: 'GitHub', s: 'github' } ] },
+        { name: 'ML & Research', items: [
+          { n: 'PyTorch', s: 'pytorch' }, { n: 'Scikit-learn', s: 'scikitlearn' }, { n: 'Mamba architecture', s: '' },
+          { n: 'Knowledge Distillation', s: '' }, { n: 'Computer Vision', s: '' } ] },
+        { name: 'Tools', items: [
+          { n: 'VS Code', s: '' }, { n: 'IntelliJ IDEA', s: 'intellijidea' }, { n: 'PyCharm', s: 'pycharm' },
+          { n: 'DataGrip', s: 'datagrip' }, { n: 'Postman', s: 'postman' }, { n: 'Linux', s: 'linux' } ] },
+      ],
+      experience: [
+        { dates: '04/2026 — Present', location: 'Remote', role: 'Full-Stack Web Developer', company: 'GrihoTech', points: [
+          'Designed, built, and deployed a production-grade e-commerce platform using React 19, Vite, Node.js, Express, MySQL, and Firebase Authentication.',
+          'Implemented an end-to-end pricing & discount engine, multer-based image uploads, and Google Gemini AI product recommendations.',
+          'Solved complex Namecheap cPanel shared-hosting deployment (CloudLinux Node.js Selector, dist packaging, MySQL migrations) and built a role-based React Admin dashboard.',
+        ]},
+        { dates: '2025 — Present', location: 'Dhaka, Bangladesh', role: 'Assistant General Secretary', company: 'Health Informatics Research Lab, DIU', points: [
+          'Coordinate research activities and day-to-day lab operations alongside the Principal Investigator.',
+          'Support fellow researchers across bioinformatics and health informatics projects.',
+          'Awarded Computer Vision Bootcamp completion certificate from the lab.',
+        ]},
+        { dates: '01/2024 — Present', location: 'Bangladesh', role: 'E-Commerce Web Developer', company: 'absunifiedbd.com', points: [
+          'Develop and maintain full-stack e-commerce features for a live commercial platform.',
+          'Collaborate directly with business stakeholders to ship product management, order processing, and payment workflows.',
+        ]},
+        { dates: '06/2023 — Present', location: 'Dhaka, Bangladesh', role: 'Researcher', company: 'Health Informatics Research Lab, DIU', points: [
+          'Conducting applied research in deep learning and bioinformatics under the Health Informatics Research Lab.',
+          'Building neural network architectures and pipelines for biological data analysis.',
+          'Supervisor: Dr. Md. Zahid Hasan, Associate Professor, CSE.',
+        ]},
+      ],
+      education: [
+        { dates: '01/2023 — Present', degree: 'B.Sc. in Software Engineering', school: 'Daffodil International University', grade: 'GPA 3.79 / 4.00', extra: '' },
+        { dates: '07/2019 — 12/2021', degree: 'Higher Secondary Certificate (HSC)', school: 'Chuadanga Government College', grade: 'GPA 5.00 / 5.00', extra: '· Science' },
+        { dates: '01/2018 — 01/2019', degree: 'Secondary School Certificate (SSC)', school: 'Victoria Jubilee Govt. High School', grade: 'GPA 5.00 / 5.00', extra: '· Science' },
+      ],
+      projects: [
+        { dates: '2026 — Present', live: true, name: 'GrihoTech — Home Appliances E-Commerce', desc: 'Full-stack e-commerce app with secure auth, AI-powered product recommendations, a dynamic pricing & discount engine, and an admin dashboard. Deployed to production on cPanel.', tech: ['React 19', 'Node.js', 'Express', 'MySQL', 'Firebase', 'Gemini AI'], liveHref: 'https://www.grihotech.com', repo: 'https://github.com/al-momen663/grihotech' },
+        { dates: '01/2026 — 04/2026', live: false, name: 'Share Circle — Donation & Marketplace', desc: 'Community donation and item-sharing platform with four user roles, real-time Firestore data, geo-mapped listings via Leaflet, and a Cloud Functions backend.', tech: ['React 19', 'TypeScript', 'Firestore', 'Leaflet', 'Netlify'], liveHref: '', repo: 'https://github.com/al-momen663/share-circle' },
+        { dates: '01/2025 — 04/2025', live: false, name: 'BlitzMed — Emergency Ambulance Booking', desc: 'Online platform for booking ambulances in real time with live booking status and emergency request tracking.', tech: ['HTML', 'CSS', 'JavaScript', 'Firebase'], liveHref: '', repo: 'https://github.com/al-momen663/BlitzMed' },
+        { dates: '05/2025 — 06/2025', live: false, name: 'DIU Transport System', desc: 'Web app giving DIU students real-time access to university transport schedules and route information.', tech: ['Web App', 'JavaScript', 'Firebase'], liveHref: '', repo: 'https://github.com/al-momen663/DIU-transport-system' },
+        { dates: '01/2025 — Present', live: false, name: 'Lawyers Diary System', desc: 'Desktop client & case record management for legal professionals — case diaries, appointments, and client histories.', tech: ['Java', 'Desktop App'], liveHref: '', repo: '' },
+        { dates: '01/2025 — 04/2025', live: false, name: 'Medical Store Inventory', desc: 'Inventory management for medical stores — tracks stock levels, sales records, and supplier information.', tech: ['Java', 'Desktop App'], liveHref: '', repo: 'https://github.com/al-momen663/MedicalStoreApp' },
+      ],
+      achievements: [
+        { mark: '★', title: 'Computer Vision Bootcamp', desc: 'Completion certificate awarded by the Health Informatics Research Lab, DIU.' },
+        { mark: '◆', title: 'DIU Voluntary Service Club', desc: 'Volunteer (2023 — Present) — community service and campus initiatives.' },
+        { mark: '♥', title: 'DIU Blood Donor Club', desc: 'Active donor contributing to campus and community health programs.' },
+        { mark: '▲', title: 'DIU Data Science Club', desc: 'General member — data science workshops, competitions, and knowledge sharing.' },
+        { mark: '✓', title: 'Language proficiency', desc: 'English — professional working proficiency · Bangla — native.' },
+      ],
+    };
+  }
+
+  renderVals() {
+    if (!this._data) this._data = this.buildData();
+    if (!this._handlers) this._handlers = {
+      home: () => this.setPage('home'), skills: () => this.setPage('skills'),
+      experience: () => this.setPage('experience'), education: () => this.setPage('education'),
+      projects: () => this.setPage('projects'), achievements: () => this.setPage('achievements'),
+      contact: () => this.setPage('contact'),
+    };
+    const page = this.state.page;
+    const pages = [
+      { key: 'home', label: 'Home' }, { key: 'skills', label: 'Skills' },
+      { key: 'experience', label: 'Experience' }, { key: 'education', label: 'Education' },
+      { key: 'projects', label: 'Projects' }, { key: 'achievements', label: 'Achievements' },
+      { key: 'contact', label: 'Contact' },
+    ];
+    return {
+      splashOpacity: this.state.loaded ? 0 : 1,
+      splashPointer: this.state.loaded ? 'none' : 'auto',
+      themeIcon: this.state.theme === 'dark' ? '☀' : '☾',
+      toggleTheme: this.toggleTheme,
+      imgErr: this.imgErr,
+      goHome: this._handlers.home,
+      goProjects: this._handlers.projects,
+      nav: pages.map(p => ({
+        label: p.label,
+        onClick: this._handlers[p.key],
+        active: page === p.key,
+        color: page === p.key ? 'var(--text)' : 'var(--muted)',
+      })),
+      isHome: page === 'home', isSkills: page === 'skills', isExperience: page === 'experience',
+      isEducation: page === 'education', isProjects: page === 'projects',
+      isAchievements: page === 'achievements', isContact: page === 'contact',
+      ...this._data,
+    };
+  }
+}
+</script>
+</body>
+</html>
